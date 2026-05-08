@@ -1,0 +1,18 @@
+.event-map {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.event-map__container {
+  height: 240px;
+  width: 100%;
+  /* Muted grayscale aesthetic */
+  filter: grayscale(60%) brightness(0.75) contrast(1.1);
+  transition: filter 0.3s ease;
+}
+
+.event-map__container:hover {
+  filter: grayscale(20%) brightness(0.85) contrast(1.05);
+}

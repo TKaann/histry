@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "title": "HİSTRY",
+    "login": "Giriş Yap",
+    "logout": "Çıkış",
+    "suggest": "Öneri Yap",
+    "admin": "Admin"
+  },
+  "home": {
+    "todayIn": "Bugün Tarihte",
+    "map_label": "Olayın gerçekleştiği yer",
+    "sources": "Kaynaklar",
+    "no_event": "Bu gün için henüz bir olay eklenmedi.",
+    "no_video": ""
+  },
+  "game": {
+    "title": "Yılı Tahmin Et",
+    "subtitle": "Bu olay hangi yılda yaşandı?",
+    "placeholder": "örn. 1969",
+    "guess_btn": "Tahmin Et",
+    "attempts_left": "{{n}} hak kaldı",
+    "higher": "⬆ Daha sonraki bir yıl",
+    "lower":  "⬇ Daha önceki bir yıl",
+    "correct": "✅ Doğru!",
+    "won": "Tebrikler! {{n}} tahminde bildin.",
+    "lost": "Cevap: {{year}}",
+    "already_played": "Bugünü zaten oynadın. Yarın tekrar gel!",
+    "streak": "🔥 Seri: {{n}} gün",
+    "stats": "Toplam: {{total}} | Kazanılan: {{wins}}"
+  },
+  "auth": {
+    "login_title": "Giriş Yap",
+    "register_title": "Kayıt Ol",
+    "email": "E-posta",
+    "password": "Şifre",
+    "username": "Kullanıcı Adı",
+    "login_btn": "Giriş Yap",
+    "register_btn": "Kayıt Ol",
+    "no_account": "Hesabın yok mu?",
+    "has_account": "Zaten hesabın var mı?"
+  },
+  "suggest": {
+    "apply_title": "Öneri Yetkisi Başvurusu",
+    "apply_label": "Neden öneri yapmak istiyorsunuz?",
+    "apply_btn": "Başvur",
+    "pending": "Başvurun inceleniyor...",
+    "form_title": "Olay Öner",
+    "title_label": "Başlık",
+    "desc_label": "Açıklama",
+    "date_label": "Gösterim Tarihi",
+    "year_label": "Olayın Gerçekleştiği Yıl",
+    "loc_label": "Konum Adı",
+    "lat_label": "Enlem",
+    "lng_label": "Boylam",
+    "submit_btn": "Gönder"
+  },
+  "admin": {
+    "title": "Admin Paneli",
+    "events_tab": "Olaylar",
+    "suggestions_tab": "Öneriler",
+    "applicants_tab": "Başvurular",
+    "add_event": "Yeni Olay Ekle",
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "note_label": "Admin Notu"
+  }
+}

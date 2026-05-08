@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "title": "HISTRY",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "suggest": "Suggest",
+    "admin": "Admin"
+  },
+  "home": {
+    "todayIn": "Today in History",
+    "map_label": "Where it happened",
+    "sources": "Sources",
+    "no_event": "No event found for today.",
+    "no_video": ""
+  },
+  "game": {
+    "title": "Guess the Year",
+    "subtitle": "Which year did this event take place?",
+    "placeholder": "e.g. 1969",
+    "guess_btn": "Guess",
+    "attempts_left": "{{n}} attempts left",
+    "higher": "⬆ Try a later year",
+    "lower":  "⬇ Try an earlier year",
+    "correct": "✅ Correct!",
+    "won": "You got it in {{n}} guess(es)!",
+    "lost": "The answer was: {{year}}",
+    "already_played": "You've already played today. Come back tomorrow!",
+    "streak": "🔥 Streak: {{n}} days",
+    "stats": "Played: {{total}} | Won: {{wins}}"
+  },
+  "auth": {
+    "login_title": "Sign In",
+    "register_title": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "login_btn": "Sign In",
+    "register_btn": "Create Account",
+    "no_account": "Don't have an account?",
+    "has_account": "Already have an account?"
+  },
+  "suggest": {
+    "apply_title": "Apply for Suggestion Permission",
+    "apply_label": "Why do you want to suggest events?",
+    "apply_btn": "Apply",
+    "pending": "Your application is under review...",
+    "form_title": "Suggest an Event",
+    "title_label": "Title",
+    "desc_label": "Description",
+    "date_label": "Display Date",
+    "year_label": "Year the Event Occurred",
+    "loc_label": "Location Name",
+    "lat_label": "Latitude",
+    "lng_label": "Longitude",
+    "submit_btn": "Submit"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "events_tab": "Events",
+    "suggestions_tab": "Suggestions",
+    "applicants_tab": "Applicants",
+    "add_event": "Add New Event",
+    "approve": "Approve",
+    "reject": "Reject",
+    "delete": "Delete",
+    "edit": "Edit",
+    "note_label": "Admin Note"
+  }
+}

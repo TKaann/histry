@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # ─── Auth Service (public) ─────────────────────────────
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+
+        # ─── Content Service (public) ──────────────────────────
+        - id: content-service-public
+          uri: lb://content-service
+          predicates:
+            - Path=/content/**
+          filters:
+            - name: JwtAuthFilter
+              args:
+                requireAuth: false
+
+        # ─── Game Service (public) ─────────────────────────────
+        - id: game-service
+          uri: lb://game-service
+          predicates:
+            - Path=/game/**
+          filters:
+            - name: JwtAuthFilter
+              args:
+                requireAuth: false
+
+        # ─── Suggestion Service (protected) ───────────────────
+        - id: suggestion-service
+          uri: lb://suggestion-service
+          predicates:
+            - Path=/suggestions/**
+          filters:
+            - name: JwtAuthFilter
+              args:
+                requireAuth: true
+
+        # ─── Admin routes (admin only) ─────────────────────────
+        - id: admin-routes
+          uri: lb://content-service
+          predicates:
+            - Path=/admin/events/**
+          filters:
+            - name: JwtAuthFilter
+              args:
+                requireAuth: true
+                requiredRole: ADMIN
+
+        - id: admin-suggestion-routes
+          uri: lb://suggestion-service
+          predicates:
+            - Path=/admin/suggestions/**,/admin/applicants/**
+          filters:
+            - name: JwtAuthFilter
+              args:
+                requireAuth: true
+                requiredRole: ADMIN
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  public-key-path: ${JWT_PUBLIC_KEY_PATH:classpath:keys/public.pem}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
