@@ -46,7 +46,7 @@ export function useGameState(today) {
     setStreakRaw(newStreak)
   }
 
-  const addGuess = (guessedYear, direction) => {
+  const addGuess = (guessedYear, direction, correctYear) => {
     const current = gameState || { guesses: [], directions: [], status: 'playing' }
     const newGuesses    = [...current.guesses, guessedYear]
     const newDirections = [...current.directions, direction]
@@ -54,7 +54,12 @@ export function useGameState(today) {
     const lost   = !won && newGuesses.length >= 6
     const status = won ? 'won' : lost ? 'lost' : 'playing'
 
-    const newState = { guesses: newGuesses, directions: newDirections, status }
+    const newState = {
+      guesses: newGuesses,
+      directions: newDirections,
+      status,
+      correctYear: (won || lost) ? correctYear : undefined,  // persist answer
+    }
     saveGameState(newState)
     if (won || lost) recordResult(won)
     return newState

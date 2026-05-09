@@ -1,7 +1,9 @@
 .auth {
   display: flex;
   justify-content: center;
-  padding-top: 4rem;
+  padding-top: calc(var(--navbar-h) + 3rem);
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .auth__card {

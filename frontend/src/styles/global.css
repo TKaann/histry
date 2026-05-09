@@ -26,6 +26,7 @@
 
   --font:        'Inter', system-ui, sans-serif;
   --font-serif:  'Playfair Display', Georgia, serif;
+  --navbar-h:    57px;
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
@@ -34,7 +35,8 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }

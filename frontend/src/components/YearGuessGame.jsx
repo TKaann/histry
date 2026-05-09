@@ -14,71 +14,78 @@ export default function YearGuessGame({ today }) {
   const [error, setError] = useState('')
 
   const attempt = gameState ? gameState.guesses.length + 1 : 1
+  const isDone = alreadyPlayed || gameState?.status === 'won' || gameState?.status === 'lost'
+
+  // correctYear comes from localStorage (persisted on game end), or live from API response
+  const storedYear = gameState?.correctYear
+  const displayYear = (y) => (y < 0 ? `MÖ ${Math.abs(y)}` : `${y}`)
 
   const handleGuess = async () => {
     const year = parseInt(input, 10)
-    if (!year || year < 1 || year > 2100) { setError('Geçerli bir yıl girin'); return }
+    if (isNaN(year) || year < -9999 || year > 2100) {
+      setError('Geçerli bir yıl girin (örn: 1945 veya -500)')
+      return
+    }
     setError('')
     setLoading(true)
     try {
       const res = await gameApi.guess(year, attempt)
-      const { direction } = res.data
-      addGuess(year, direction)
+      const { direction, correctYear: revealed } = res.data
+      // Pass correctYear to addGuess so it's persisted in localStorage
+      addGuess(year, direction, revealed)
       setInput('')
-    } catch (e) {
+    } catch {
       setError('Bir hata oluştu, tekrar dene.')
     } finally {
       setLoading(false)
     }
   }
 
-  const dirIcon = (dir) => {
-    if (dir === 'CORRECT') return <span className="dir-correct">✓</span>
-    if (dir === 'HIGHER')  return <span className="dir-higher">↑</span>
-    return <span className="dir-lower">↓</span>
+  const chipClass = (dir) => dir === 'CORRECT' ? 'chip chip--correct' : 'chip chip--hint'
+  const chipContent = (year, dir) => {
+    if (dir === 'CORRECT') return `${year} ✓`
+    if (dir === 'HIGHER')  return `${year} ↑`
+    return `${year} ↓`
   }
 
-  const dirLabel = (dir) => {
-    if (dir === 'CORRECT') return t('game.correct')
-    if (dir === 'HIGHER')  return t('game.higher')
-    return t('game.lower')
-  }
+  const attemptsLeft = MAX_ATTEMPTS - (gameState?.guesses.length || 0)
 
   return (
-    <section className="game">
-      <div className="divider">{t('game.title')}</div>
-      <p className="game__subtitle text-muted">{t('game.subtitle')}</p>
+    <div className="game">
 
-      {/* Previous guesses */}
+      <div className="game__header">
+        <span className="game__title-label">{t('game.title')}</span>
+        {!isDone && (
+          <span className="game__attempts-badge">{attemptsLeft} / {MAX_ATTEMPTS}</span>
+        )}
+      </div>
+      <p className="game__subtitle">{t('game.subtitle')}</p>
+
+      {/* Progress dots */}
+      <div className="game__dots">
+        {Array.from({ length: MAX_ATTEMPTS }).map((_, i) => {
+          const dir = gameState?.directions[i]
+          let cls = 'dot'
+          if (dir === 'CORRECT')  cls += ' dot--correct'
+          else if (dir)           cls += ' dot--used'
+          else if (i === (gameState?.guesses.length || 0) && !isDone) cls += ' dot--active'
+          return <span key={i} className={cls} />
+        })}
+      </div>
+
+      {/* Guess chips */}
       {gameState?.guesses.length > 0 && (
-        <div className="game__history">
+        <div className="game__chips">
           {gameState.guesses.map((yr, i) => (
-            <div key={i} className={`game__row game__row--${gameState.directions[i].toLowerCase()}`}>
-              <span className="game__year">{yr}</span>
-              <span className="game__dir">{dirIcon(gameState.directions[i])}</span>
-              <span className="game__hint">{dirLabel(gameState.directions[i])}</span>
-            </div>
+            <span key={i} className={chipClass(gameState.directions[i])}>
+              {chipContent(yr, gameState.directions[i])}
+            </span>
           ))}
         </div>
       )}
 
-      {/* Game result */}
-      {gameState?.status === 'won' && (
-        <div className="game__result game__result--won">
-          {t('game.won', { n: gameState.guesses.length })}
-        </div>
-      )}
-      {gameState?.status === 'lost' && (
-        <div className="game__result game__result--lost">
-          {t('game.lost', { year: '?' })}
-        </div>
-      )}
-
-      {/* Already played today */}
-      {alreadyPlayed && gameState?.status !== 'playing' ? (
-        <p className="game__done text-muted">{t('game.already_played')}</p>
-      ) : (
-        /* Input row */
+      {/* Input — hidden when done */}
+      {!isDone && (
         <div className="game__input-row">
           <input
             className="game__input"
@@ -87,15 +94,10 @@ export default function YearGuessGame({ today }) {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleGuess()}
-            min="1"
-            max="2100"
-            disabled={loading || alreadyPlayed}
+            disabled={loading}
+            autoFocus
           />
-          <button
-            className="game__btn"
-            onClick={handleGuess}
-            disabled={loading || alreadyPlayed}
-          >
+          <button className="game__btn" onClick={handleGuess} disabled={loading}>
             {loading ? '...' : t('game.guess_btn')}
           </button>
         </div>
@@ -103,20 +105,49 @@ export default function YearGuessGame({ today }) {
 
       {error && <p className="game__error">{error}</p>}
 
-      {/* Attempts counter */}
-      {!alreadyPlayed && gameState?.status !== 'won' && (
-        <p className="game__attempts text-muted">
-          {t('game.attempts_left', { n: MAX_ATTEMPTS - (gameState?.guesses.length || 0) })}
-        </p>
-      )}
-
-      {/* Streak stats */}
-      {streak.totalGames > 0 && (
-        <div className="game__stats">
-          <span>{t('game.streak', { n: streak.current })}</span>
-          <span className="text-muted">{t('game.stats', { total: streak.totalGames, wins: streak.totalWins })}</span>
+      {/* Result banners */}
+      {gameState?.status === 'won' && (
+        <div className="game__result game__result--won">
+          🎉 {t('game.won', { n: gameState.guesses.length })}
+          {storedYear != null && (
+            <span className="game__answer"> — {displayYear(storedYear)}</span>
+          )}
         </div>
       )}
-    </section>
+      {gameState?.status === 'lost' && (
+        <div className="game__result game__result--lost">
+          😔 Cevap:{' '}
+          <strong>
+            {storedYear != null ? displayYear(storedYear) : '—'}
+          </strong>
+        </div>
+      )}
+      {alreadyPlayed && gameState?.status !== 'playing' && (
+        <p className="game__done">{t('game.already_played')}</p>
+      )}
+
+      {/* Stats — only after game ends */}
+      {isDone && streak.totalGames > 0 && (
+        <div className="game__stats">
+          <div className="stat">
+            <span className="stat__value">{streak.totalGames}</span>
+            <span className="stat__label">Toplam</span>
+          </div>
+          <div className="stat">
+            <span className="stat__value">{streak.totalWins}</span>
+            <span className="stat__label">Kazanılan</span>
+          </div>
+          <div className="stat">
+            <span className="stat__value">{streak.current}</span>
+            <span className="stat__label">Seri</span>
+          </div>
+          <div className="stat">
+            <span className="stat__value">{streak.max}</span>
+            <span className="stat__label">En Uzun</span>
+          </div>
+        </div>
+      )}
+
+    </div>
   )
 }

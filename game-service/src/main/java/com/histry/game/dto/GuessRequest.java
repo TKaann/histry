@@ -9,7 +9,7 @@ import lombok.Data;
 public class GuessRequest {
 
     @NotNull(message = "guessedYear is required")
-    @Min(value = 1, message = "Year must be positive")
+    @Min(value = -9999, message = "Year must be after -9999")
     @Max(value = 2100, message = "Year seems too far in the future")
     private Integer guessedYear;
 }

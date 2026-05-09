@@ -1,4 +1,4 @@
-.admin { padding: 2rem 1.25rem; }
+.admin { padding: calc(var(--navbar-h) + 1.5rem) 1.25rem 3rem; height: 100vh; overflow-y: auto; }
 .admin__title { font-family: var(--font-serif); font-size: 1.8rem; color: var(--accent); margin-bottom: 1.5rem; }
 
 .admin__tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }

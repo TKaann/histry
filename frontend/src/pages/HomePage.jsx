@@ -36,67 +36,72 @@ export default function HomePage() {
     </div>
   )
 
-  if (error) return (
-    <div className="container" style={{ paddingTop: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-      {error}
-    </div>
-  )
+  if (error) return <div className="home-error">{error}</div>
+
+  const youtubeId = event?.youtubeUrl ? extractYouTubeId(event.youtubeUrl) : null
 
   return (
-    <main className="home container">
+    <main className="home-page">
 
-      {/* Date header */}
-      <header className="home__header">
-        <p className="home__label text-muted">{t('home.todayIn')}</p>
-        <h1 className="home__date">{displayDate}</h1>
-      </header>
-
-      {/* Map */}
-      {event?.latitude && event?.longitude && (
-        <EventMap
-          lat={event.latitude}
-          lng={event.longitude}
-          locationName={event.locationName}
-        />
-      )}
-
-      {/* Event card */}
-      <article className="home__event card">
+      {/* ── Row 1: Meta chips ─────────────────────── */}
+      <div className="home__meta">
+        <span className="home__chip home__chip--date">📅 {displayDate}</span>
         {event?.locationName && (
-          <p className="home__location text-muted">
-            <span className="home__pin">📍</span> {event.locationName}
-          </p>
+          <span className="home__chip home__chip--loc">📍 {event.locationName}</span>
         )}
-        <h2 className="home__title">{event?.title}</h2>
-        <p className="home__description">{event?.description}</p>
+      </div>
 
-        {/* YouTube embed */}
-        {event?.youtubeUrl && (
-          <div className="home__video">
+      {/* ── Row 2: Left (text + sources) + Right (youtube) ─── */}
+      <div className="home__top">
+
+        {/* Left: title, desc, sources */}
+        <div className="home__text">
+          <h1 className="home__title">{event?.title}</h1>
+          <p className="home__desc">{event?.description}</p>
+
+          {event?.sources?.length > 0 && (
+            <div className="home__sources">
+              <span className="home__sources-label">{t('home.sources')}:</span>
+              {event.sources.map((s, i) => (
+                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" className="home__source-chip">
+                  {s.title} ↗
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Right: YouTube embed (only if exists) */}
+        {youtubeId && (
+          <div className="home__video-wrap">
             <iframe
-              src={`https://www.youtube.com/embed/${extractYouTubeId(event.youtubeUrl)}`}
+              src={`https://www.youtube.com/embed/${youtubeId}`}
               title="Event video"
               allowFullScreen
               frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             />
           </div>
         )}
+      </div>
 
-        {/* Sources */}
-        {event?.sources?.length > 0 && (
-          <div className="home__sources">
-            <span className="text-muted" style={{ fontSize: '0.8rem' }}>{t('home.sources')}:</span>
-            {event.sources.map((s, i) => (
-              <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" className="home__source-link">
-                {s.title} ↗
-              </a>
-            ))}
+      {/* ── Row 3: Map + Game widget ──────────────── */}
+      <div className="home__bottom">
+        {event?.latitude && event?.longitude ? (
+          <div className="home__map-wrap">
+            <EventMap lat={event.latitude} lng={event.longitude} locationName={event.locationName} />
+          </div>
+        ) : (
+          <div className="home__map-placeholder">
+            <span>🗺</span>
+            <p>Konum yok</p>
           </div>
         )}
-      </article>
 
-      {/* Divider + Game */}
-      <YearGuessGame today={today} />
+        <div className="home__game-wrap">
+          <YearGuessGame today={today} />
+        </div>
+      </div>
 
     </main>
   )
